@@ -1,0 +1,15 @@
+* {
+  margin: 0px;
+  padding: 0px;
+  background-color: #262626;
+}
+.main{
+  background-color: darkgrey;
+  margin: auto;
+  width: 100%;
+}
+.button{
+  background-color: darkgrey;
+  width: 5000;
+  height: 5000;
+}
