@@ -3,13 +3,40 @@
   padding: 0px;
   background-color: #262626;
 }
+
 .main{
-  background-color: darkgrey;
   margin: auto;
-  width: 100%;
 }
+
+.slideShow{
+  margin: auto;
+  overflow: hidden;
+  height: 250px;
+  width: 210px;
+}
+
+.slideList{
+  height: 250px;
+  width: var(--width);
+  margin-left: var(--marginLeft);
+}
+
+.slide{
+  height: 250px;
+  width: 210px;
+  float: left;
+}
+
 .button{
   background-color: darkgrey;
-  width: 5000;
-  height: 5000;
+  margin: auto;
+  width: 50px;
+  height: 50px;
+}
+
+.text{
+  margin: auto;
+  color: darkgrey;
+  text-align: center;
+  font-size: 20px;
 }

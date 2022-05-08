@@ -1,41 +1,79 @@
+const slideWidth = 210;
+const scrollSpeed = 15;
 let images = [
     `img/blue.png`,
     `img/black.png`,
-    `img/green.png`
+    `img/green.png`,
+    `img/red.png`
 ];
 let imageIndex = 0;
-let transitionDuration = 0;
+let currentPixelOffset = 0;
+let targetPixelOffset = 0;
+let slideShowList = document.getElementById(`slideList`);
+let allowSlideshowWrap = true;
 
 window.onload = () =>
 {
+    document.getElementById(`ButtonLeft`).style.display = `none`;
     document.getElementById(`ButtonLeft`).onclick = function() {cycleSlideShow(-1);};
     document.getElementById(`ButtonRight`).onclick = function() {cycleSlideShow(1);};
+
+    //add images dynamically
+    for (let i = 0; i < images.length; i++)
+    {
+        let newImage = document.createElement(`img`);
+        newImage.classList.add(`slide`);
+        newImage.src = images[i];
+        slideShowList.appendChild(newImage);
+    }
+    //initialize margin
+    slideShowList.style.setProperty(`--marginLeft`, -currentPixelOffset + `px`);
+    slideShowList.style.setProperty(`--width`, slideWidth * images.length + `px`);
+
+    if (allowSlideshowWrap){
+        document.getElementById(`ButtonLeft`).style.display = ``;
+    }
 };
 
+//i decided to add the option to include an overlap,
+//you can click left on the first element to go to the last or
+//click right on the last element to go to the first.
 let cycleSlideShow = (direction) =>
 {
-    console.log(document.getElementById(`ButtonLeft`).style.display);
     imageIndex+= direction;
     document.getElementById(`ButtonLeft`).style.display = ``;
     document.getElementById(`ButtonRight`).style.display = ``;
-    if (imageIndex === 0){
-        document.getElementById(`ButtonLeft`).style.display = `none`;
+    if (allowSlideshowWrap)
+    {
+        if (imageIndex===-1){
+            imageIndex = images.length-1;
+        }
+        imageIndex = imageIndex % images.length;
     }
-    else if (imageIndex === images.length-1){
-        document.getElementById(`ButtonRight`).style.display = `none`;
+    else
+    {
+        if (imageIndex === 0){
+            document.getElementById(`ButtonLeft`).style.display = `none`;
+        }
+        else if (imageIndex === images.length-1){
+            document.getElementById(`ButtonRight`).style.display = `none`;
+        }
     }
-    imageIndex = imageIndex % images.length;
-    slideShow();
+
+    targetPixelOffset = imageIndex * slideWidth;
+    moveSlideTowardsCurrentImage();
 };
 
-
-function slideShow() {
-    document.getElementById(`slideShow`).className += `fadeOut`;
-    setTimeout(function() {
-        document.getElementById(`slideShow`).src = images[imageIndex];
-        document.getElementById(`slideShow`).className = ``;
-    },1000);
-
-    setTimeout(slideShow, transitionDuration);
-}
-slideShow();
+//this probably isnt what you had in mind but fuck it
+let moveSlideTowardsCurrentImage = () =>
+{
+    let sign = clamp(targetPixelOffset - currentPixelOffset, -1, 1);
+    let maxDelta = Math.abs(targetPixelOffset - currentPixelOffset);
+    currentPixelOffset = currentPixelOffset + sign * clamp(scrollSpeed, 0, maxDelta);
+    slideShowList.style.setProperty(`--marginLeft`, -currentPixelOffset + `px`);
+    if (targetPixelOffset != currentPixelOffset)
+    {
+        setTimeout(moveSlideTowardsCurrentImage, 1);
+    }
+};
+const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
