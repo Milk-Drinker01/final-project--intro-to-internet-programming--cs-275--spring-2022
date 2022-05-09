@@ -62,7 +62,7 @@
 }
 
 .buttonLeft{
-  background-color: darkgrey;
+  background-color: transparent;
   width: var(--buttonSize);
   height: var(--buttonSize);
   position: absolute;
@@ -70,7 +70,7 @@
 }
 
 .buttonRight{
-  background-color: darkgrey;
+  background-color: transparent;
   width: var(--buttonSize);
   height: var(--buttonSize);
   position: absolute;
