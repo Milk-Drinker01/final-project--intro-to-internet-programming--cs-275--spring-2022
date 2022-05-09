@@ -1,33 +1,28 @@
-const slideWidth = 210;
-const slideHeight = 250;
+const slideWidth = 520;
+const slideHeight = 300;
 const scrollSpeed = 5;
 const buttonSize = 35;
-let images = [
-    `img/blue.png`,
-    `img/black.png`,
-    `img/green.png`,
-    `img/red.png`
-];
 let imageIndex = 0;
 let currentPixelOffset = 0;
 let targetPixelOffset = 0;
 let slideShowList = document.getElementById(`slideList`);
-let allowSlideshowWrap = false;
+let numSlides = slideShowList.childElementCount;
 
 window.onload = () =>
 {
+    document.addEventListener(`keydown`, function(event) {
+        if (event.keyCode == 37 && imageIndex !== 0) {
+            cycleSlideShow(-1);
+        }
+        else if (event.keyCode == 39 && imageIndex !== numSlides-1) {
+            cycleSlideShow(1);
+        }
+    }, true);
+
     document.getElementById(`ButtonLeft`).style.display = `none`;
     document.getElementById(`ButtonLeft`).onclick = function() {cycleSlideShow(-1);};
     document.getElementById(`ButtonRight`).onclick = function() {cycleSlideShow(1);};
 
-    //add images dynamically
-    for (let i = 0; i < images.length; i++)
-    {
-        let newImage = document.createElement(`img`);
-        newImage.classList.add(`slide`);
-        newImage.src = images[i];
-        slideShowList.appendChild(newImage);
-    }
     //initialize button positions and size
     let leftButton = document.getElementById(`ButtonLeft`);
     let rightButton = document.getElementById(`ButtonRight`);
@@ -38,43 +33,26 @@ window.onload = () =>
     leftButton.style.setProperty(`--buttonSize`, buttonSize+ `px`);
     //initialize margin
     slideShowList.style.setProperty(`--marginLeft`, -currentPixelOffset + `px`);
-    slideShowList.style.setProperty(`--width`, slideWidth * images.length + `px`);
-
-    if (allowSlideshowWrap){
-        document.getElementById(`ButtonLeft`).style.display = ``;
-    }
+    slideShowList.style.setProperty(`--width`, slideWidth * numSlides + `px`);
 };
 
-//i decided to add the option to include an overlap,
-//you can click left on the first element to go to the last or
-//click right on the last element to go to the first.
 let cycleSlideShow = (direction) =>
 {
     imageIndex+= direction;
     document.getElementById(`ButtonLeft`).style.display = ``;
     document.getElementById(`ButtonRight`).style.display = ``;
-    if (allowSlideshowWrap)
-    {
-        if (imageIndex===-1){
-            imageIndex = images.length-1;
-        }
-        imageIndex = imageIndex % images.length;
+    if (imageIndex === 0){
+        document.getElementById(`ButtonLeft`).style.display = `none`;
     }
-    else
-    {
-        if (imageIndex === 0){
-            document.getElementById(`ButtonLeft`).style.display = `none`;
-        }
-        else if (imageIndex === images.length-1){
-            document.getElementById(`ButtonRight`).style.display = `none`;
-        }
+    else if (imageIndex === numSlides - 1){
+        document.getElementById(`ButtonRight`).style.display = `none`;
     }
 
     targetPixelOffset = imageIndex * slideWidth;
     moveSlideTowardsCurrentImage();
 };
 
-//this probably isnt what you had in mind but fuck it
+//theres probably an easier way to do this but fuck it
 let moveSlideTowardsCurrentImage = () =>
 {
     let sign = clamp(targetPixelOffset - currentPixelOffset, -1, 1);
