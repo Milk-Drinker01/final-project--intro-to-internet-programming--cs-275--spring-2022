@@ -1,5 +1,7 @@
 const slideWidth = 210;
-const scrollSpeed = 15;
+const slideHeight = 250;
+const scrollSpeed = 5;
+const buttonSize = 35;
 let images = [
     `img/blue.png`,
     `img/black.png`,
@@ -10,7 +12,7 @@ let imageIndex = 0;
 let currentPixelOffset = 0;
 let targetPixelOffset = 0;
 let slideShowList = document.getElementById(`slideList`);
-let allowSlideshowWrap = true;
+let allowSlideshowWrap = false;
 
 window.onload = () =>
 {
@@ -26,6 +28,14 @@ window.onload = () =>
         newImage.src = images[i];
         slideShowList.appendChild(newImage);
     }
+    //initialize button positions and size
+    let leftButton = document.getElementById(`ButtonLeft`);
+    let rightButton = document.getElementById(`ButtonRight`);
+    rightButton.style.setProperty(`--marginLeft`, slideWidth - buttonSize + `px`);
+    rightButton.style.setProperty(`--marginTop`, (slideHeight - buttonSize)/2+ `px`);
+    rightButton.style.setProperty(`--buttonSize`, buttonSize+ `px`);
+    leftButton.style.setProperty(`--marginTop`, (slideHeight - buttonSize)/2+ `px`);
+    leftButton.style.setProperty(`--buttonSize`, buttonSize+ `px`);
     //initialize margin
     slideShowList.style.setProperty(`--marginLeft`, -currentPixelOffset + `px`);
     slideShowList.style.setProperty(`--width`, slideWidth * images.length + `px`);
@@ -76,4 +86,5 @@ let moveSlideTowardsCurrentImage = () =>
         setTimeout(moveSlideTowardsCurrentImage, 1);
     }
 };
+
 const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
