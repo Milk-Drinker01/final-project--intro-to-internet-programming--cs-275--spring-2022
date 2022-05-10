@@ -60,7 +60,7 @@ let validateHTML = () => {
 };
 
 let compressHTML = () => {
-    return src([`*.html`,`**/*.html`])
+    return src(`*.html`)
         .pipe(htmlCompressor({collapseWhitespace: true}))
         .pipe(dest(`prod`));
 };
@@ -84,14 +84,14 @@ let lintJS = () => {
 let transpileJSForDev = () => {
     return src(`js/*.js`)
         .pipe(babel())
-        .pipe(dest(`temp/scripts`));
+        .pipe(dest(`temp/js`));
 };
 
 let transpileJSForProd = () => {
     return src(`js/*.js`)
         .pipe(babel())
         .pipe(jsCompressor())
-        .pipe(dest(`prod/scripts`));
+        .pipe(dest(`prod/js`));
 };
 
 let compileCSSForProd = () => {
@@ -113,15 +113,17 @@ let copyUnprocessedAssetsForProd = () => {
         .pipe(dest(`prod`));
 };
 
+let copyImageForProd = () => {
+    return src(`img/*`)
+        .pipe(dest(`prod/img`));
+};
+
 let serve = () => {
     browserSync({
         notify: true,
         reloadDelay: 50,
         browser: browserChoice,
         server: {
-            baseDir: [
-                `temp`
-            ]
         }
     });
 
@@ -202,5 +204,6 @@ exports.build = series(
     compressHTML,
     compileCSSForProd,
     transpileJSForProd,
-    copyUnprocessedAssetsForProd
+    copyUnprocessedAssetsForProd,
+    copyImageForProd
 );
